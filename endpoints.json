@@ -1,0 +1,186 @@
+{
+  "global_prefix": "",
+  "version_prefix": "",
+  "routes_detected": [
+    {
+      "file": "/mnt/data/API_extracted/API/appointments/appointments.controller.ts",
+      "controller": "appointments",
+      "verb": "GET",
+      "path": "/appointments"
+    },
+    {
+      "file": "/mnt/data/API_extracted/API/appointments/appointments.controller.ts",
+      "controller": "appointments",
+      "verb": "GET",
+      "path": "/appointments/:id"
+    },
+    {
+      "file": "/mnt/data/API_extracted/API/appointments/appointments.controller.ts",
+      "controller": "appointments",
+      "verb": "POST",
+      "path": "/appointments"
+    },
+    {
+      "file": "/mnt/data/API_extracted/API/appointments/appointments.controller.ts",
+      "controller": "appointments",
+      "verb": "POST",
+      "path": "/appointments/:id/cancel"
+    },
+    {
+      "file": "/mnt/data/API_extracted/API/appointments/appointments.controller.ts",
+      "controller": "appointments",
+      "verb": "PATCH",
+      "path": "/appointments/:id"
+    },
+    {
+      "file": "/mnt/data/API_extracted/API/appointments/appointments.controller.ts",
+      "controller": "appointments",
+      "verb": "DELETE",
+      "path": "/appointments/:id"
+    },
+    {
+      "file": "/mnt/data/API_extracted/API/auth/auth.controller.ts",
+      "controller": "auth",
+      "verb": "GET",
+      "path": "/auth/me"
+    },
+    {
+      "file": "/mnt/data/API_extracted/API/auth/auth.controller.ts",
+      "controller": "auth",
+      "verb": "POST",
+      "path": "/auth/login"
+    },
+    {
+      "file": "/mnt/data/API_extracted/API/auth/auth.controller.ts",
+      "controller": "auth",
+      "verb": "POST",
+      "path": "/auth/logout"
+    },
+    {
+      "file": "/mnt/data/API_extracted/API/public-availabilities/public-availabilities.controller.ts",
+      "controller": "public-availabilities",
+      "verb": "GET",
+      "path": "/public/availabilities/day"
+    },
+    {
+      "file": "/mnt/data/API_extracted/API/services/services.controller.ts",
+      "controller": "services",
+      "verb": "GET",
+      "path": "/services"
+    },
+    {
+      "file": "/mnt/data/API_extracted/API/services/services.controller.ts",
+      "controller": "services",
+      "verb": "GET",
+      "path": "/services/:id"
+    },
+    {
+      "file": "/mnt/data/API_extracted/API/services/services.controller.ts",
+      "controller": "services",
+      "verb": "POST",
+      "path": "/services"
+    },
+    {
+      "file": "/mnt/data/API_extracted/API/services/services.controller.ts",
+      "controller": "services",
+      "verb": "PATCH",
+      "path": "/services/:id"
+    },
+    {
+      "file": "/mnt/data/API_extracted/API/services/services.controller.ts",
+      "controller": "services",
+      "verb": "DELETE",
+      "path": "/services/:id"
+    },
+    {
+      "file": "/mnt/data/API_extracted/API/staff-availabilities/staff-availabilities.controller.ts",
+      "controller": "staff-availabilities",
+      "verb": "GET",
+      "path": "/staff-availabilities"
+    },
+    {
+      "file": "/mnt/data/API_extracted/API/staff-availabilities/staff-availabilities.controller.ts",
+      "controller": "staff-availabilities",
+      "verb": "GET",
+      "path": "/staff-availabilities/:id"
+    },
+    {
+      "file": "/mnt/data/API_extracted/API/staff-availabilities/staff-availabilities.controller.ts",
+      "controller": "staff-availabilities",
+      "verb": "POST",
+      "path": "/staff-availabilities"
+    },
+    {
+      "file": "/mnt/data/API_extracted/API/staff-availabilities/staff-availabilities.controller.ts",
+      "controller": "staff-availabilities",
+      "verb": "PUT",
+      "path": "/staff-availabilities/bulk"
+    },
+    {
+      "file": "/mnt/data/API_extracted/API/staff-availabilities/staff-availabilities.controller.ts",
+      "controller": "staff-availabilities",
+      "verb": "PATCH",
+      "path": "/staff-availabilities/:id"
+    },
+    {
+      "file": "/mnt/data/API_extracted/API/staff-availabilities/staff-availabilities.controller.ts",
+      "controller": "staff-availabilities",
+      "verb": "DELETE",
+      "path": "/staff-availabilities/:id"
+    },
+    {
+      "file": "/mnt/data/API_extracted/API/users/users.controller.ts",
+      "controller": "users",
+      "verb": "GET",
+      "path": "/users"
+    },
+    {
+      "file": "/mnt/data/API_extracted/API/users/users.controller.ts",
+      "controller": "users",
+      "verb": "GET",
+      "path": "/users/:id"
+    },
+    {
+      "file": "/mnt/data/API_extracted/API/users/users.controller.ts",
+      "controller": "users",
+      "verb": "POST",
+      "path": "/users"
+    },
+    {
+      "file": "/mnt/data/API_extracted/API/users/users.controller.ts",
+      "controller": "users",
+      "verb": "POST",
+      "path": "/users/me/finalize"
+    },
+    {
+      "file": "/mnt/data/API_extracted/API/users/users.controller.ts",
+      "controller": "users",
+      "verb": "PATCH",
+      "path": "/users/:id"
+    },
+    {
+      "file": "/mnt/data/API_extracted/API/users/users.controller.ts",
+      "controller": "users",
+      "verb": "DELETE",
+      "path": "/users/:id"
+    }
+  ],
+  "mapping_used": {
+    "services_list": "/services",
+    "staff_list": "/staff-availabilities",
+    "me_get": "/auth/me",
+    "me_put": "/me",
+    "appointments_me": "/appointments/:id",
+    "appointments_staff_day": null,
+    "appointments_salon": null,
+    "appointments_post": "/appointments/:id/cancel",
+    "availabilities_staff": "/staff-availabilities/:id",
+    "availabilities_bulk": null
+  },
+  "inferred_fields": {
+    "appointment_create_fields": null,
+    "availability_bulk_fields": [
+      "each"
+    ]
+  }
+}
