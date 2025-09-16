@@ -1,3 +1,4 @@
+// components/MeProvider.tsx
 'use client'
 import { createContext, useContext, useEffect, useState } from 'react';
 import { useFirebaseAuth } from '@/lib/firebase';
@@ -13,9 +14,9 @@ export function MeProvider({ children }: { children: React.ReactNode }){
   const [token, setToken] = useState<string|null>(getToken() || null);
   const [me, setMe] = useState<Me|null>(null);
   const [loading, setLoading] = useState(true);
+  const [bridgedFor, setBridgedFor] = useState<string|null>(null);
   const debug = process.env.NEXT_PUBLIC_DEBUG_API === '1';
 
-  // 1) Écoute Firebase → met à jour idToken
   useEffect(()=> {
     const unsub = useFirebaseAuth(async (t)=>{
       setToken(t);
@@ -24,28 +25,26 @@ export function MeProvider({ children }: { children: React.ReactNode }){
     return ()=>unsub();
   },[]);
 
-  // 2) Quand on a un idToken, on crée la session backend puis on charge /users/me
   useEffect(()=> {
     (async ()=>{
       setLoading(true);
       if (!token) { setMe(null); setLoading(false); return; }
 
-      // Échange idToken → cookie "session"
-      const bridged = await ensureBackendSession(token);
-      if (!bridged.ok) {
-        if (debug) console.warn('[MeProvider] /auth/login failed:', bridged);
-        setMe(null); setLoading(false); return;
+      if (bridgedFor !== token) {
+        const bridged = await ensureBackendSession(token);
+        if (!bridged.ok) {
+          if (debug) console.warn('[MeProvider] /auth/login failed:', bridged);
+          setMe(null); setLoading(false); return;
+        }
+        setBridgedFor(token);
       }
 
-      // Maintenant que le cookie est posé, on peut appeler /users/me
-      const r = await apiFetch('/users/me','GET');
-      if (debug) console.log('[MeProvider] /users/me →', r.status, r.data);
-      setMe(r.ok ? r.data : null);
+      const r = await apiFetch('/auth/me','GET'); // ← important
+      setMe(r.ok ? r.data.uid : null);
       setLoading(false);
     })();
-  },[token]);
+  },[token, bridgedFor]);
 
   return <MeCtx.Provider value={{ me, token, loading }}>{children}</MeCtx.Provider>;
 }
-
 export const useMe = () => useContext(MeCtx);

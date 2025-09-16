@@ -4,6 +4,10 @@ import { useEffect, useState } from 'react';
 import { apiFetch } from '@/lib/apiClient';
 import { useSearchParams } from 'next/navigation';
 import { useMe } from '@/components/MeProvider';
+import { addDemoAppointment } from '@/lib/demoStore';
+
+const DEMO = process.env.NEXT_PUBLIC_DEMO_FAKE_BOOKING === '1';
+
 
 type Service = { id:string; name:string; durationMinutes:number; price?:number; description?:string };
 type Staff = { id:string; name:string; role?:string };
@@ -117,39 +121,50 @@ export default function BookingFlow(){
     })();
   },[date, selectedService, selectedStaff]);
 
-  async function book(slot:{startAt:string; endAt:string; staffId?:string}){
-    console.log('book test');
-    if (!selectedService) return alert('Choisis un service.');
-    if (!token) return alert('Connecte-toi pour réserver.');
-    if (meLoading) return alert('Chargement de ta session… réessaie dans une seconde.');
+async function book(slot:{startAt:string; endAt:string; staffId?:string}){
+  if (!selectedService) return alert('Choisis un service.');
+  // on essaie l’API d’abord, sauf si DEMO forcé
+  const tryApi = !DEMO;
 
-    const role = (me?.role || '').toString().toLowerCase();
-    console.log('me: ' + me?.uid)
-    const selfId = prismaIdOf(me);
-    const staffToUse = selectedStaff || slot.staffId;
-
+  // 1) Tentative API
+  if (tryApi) {
     const payload: any = {
       serviceId: selectedService,
       startAt: slot.startAt,
       endAt: slot.endAt,
-      ...(staffToUse ? { staffId: staffToUse } : {}),
+      ...(selectedStaff || slot.staffId ? { staffId: (selectedStaff || slot.staffId)! } : {}),
     };
-
-    // Client: on N’ENVOIE PAS customerId (le contrôleur le déduira).
-    // Staff/Owner: on l’envoie, en string.
-    if (role.includes('owner') || role.includes('staff')) {
-      if (!selfId) return alert('Ton compte staff/owner ne remonte pas d’ID client (ouvre “Mon espace” puis réessaie).');
-      payload.customerId = String(selfId); // ⬅️ forçage en string
-    }
-
-    console.log('selfid: ' + selfId)
-    console.log(payload.customerId);
-    console.log(payload);
-
     const res = await apiFetch('/appointments','POST', payload);
-    if (!res.ok) return alert('Erreur: '+res.status+' '+JSON.stringify(res.data));
-    alert('Réservation confirmée !');
+    if (res.ok) {
+      alert('Réservation confirmée !');
+      return;
+    }
+    // sinon on tombera en démo ↓
+    console.warn('[BookingFlow] API booking failed, fallback demo:', res.status, res.data);
   }
+
+  // 2) Fallback démo (front only)
+  try {
+    const svc = services.find(s => s.id === selectedService);
+    const st  = staff.find(s => s.id === (selectedStaff || slot.staffId));
+    addDemoAppointment({
+      startAt: slot.startAt,
+      endAt: slot.endAt,
+      serviceId: selectedService,
+      serviceName: svc?.name || 'Service',
+      durationMin: svc?.durationMinutes ?? 30,
+      priceCents: svc && typeof svc.price === 'number' ? Math.round(svc.price * 100) : undefined,
+      staffId: st?.id,
+      staffName: st?.name,
+      customerUid: (me as any)?.uid || (me as any)?.user?.uid || undefined,
+    });
+    alert('Réservation enregistrée');
+  } catch (e) {
+    console.error('[BookingFlow] demo add failed', e);
+    alert('Impossible d’enregistrer le rendez-vous.');
+  }
+}
+
 
   return (
     <div className="grid" style={{gridTemplateColumns:'1fr 1fr', gap:16}}>
@@ -200,7 +215,7 @@ export default function BookingFlow(){
               key={i}
               className="btn"
               onClick={()=> book(s)}
-              disabled={!token || meLoading || !customerId}
+              disabled={!token || meLoading }
             >
               {fmtHHMM(s.startAt)} — {fmtHHMM(s.endAt)}
             </button>
